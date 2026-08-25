@@ -10,7 +10,7 @@ const User = () => {
     useEffect(() => {
         let url = getKartkatalogApiUrl()() + "/user";
 
-        const token = getCookie("BearerToken")
+        const token = getCookieValue("BearerToken")
 
         if(token)
         {
@@ -39,5 +39,13 @@ const User = () => {
         </p>
     );
 };
+
+function getCookieValue(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) {
+        return decodeURIComponent(match[2]);
+    }
+    return null;
+}
 
 export default User;
