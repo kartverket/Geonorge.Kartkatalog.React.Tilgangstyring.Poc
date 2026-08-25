@@ -10,22 +10,27 @@ const User = () => {
     useEffect(() => {
         let url = getKartkatalogApiUrl()() + "/user";
 
-        fetch(url, {headers: {'Accept': 'application/json'}, credentials: "include"})
-            .then(response => {
-                if (response.status === 403) {
-                    redirect("/login")
-                }
-                return response.json();
-            })
-            .then(user => {
-                if (user) {
-                    setUser(user);
-                }
-            });
+        const token = getCookie("BearerToken")
+
+        if(token)
+        {
+            fetch(url, {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    if (response.status === 403) {
+                        redirect("/login")
+                    }
+                    return response.json();
+                })
+                .then(user => {
+                    if (user) {
+                        setUser(user);
+                    }
+                });
+        }
     }, []);
 
     if (!user) {
-        return <p>Loading...</p>;
+        return <p>Laster...</p>;
     }
 
     return (
