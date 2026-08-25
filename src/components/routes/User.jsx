@@ -10,7 +10,7 @@ const User = () => {
     useEffect(() => {
         let url = getKartkatalogApiUrl()() + "/user";
 
-        fetch(url)
+        fetch(url, {headers: {'Accept': 'application/json'}})
             .then(response => {
                 if (response.status === 403) {
                     redirect("/login")
