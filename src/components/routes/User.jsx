@@ -10,23 +10,18 @@ const User = () => {
     useEffect(() => {
         let url = getKartkatalogApiUrl()() + "/user";
 
-        const token = getCookieValue("BearerToken")
-
-        if(token)
-        {
-            fetch(url, {headers: {'Authorization': `Bearer ${token}`}})
-                .then(response => {
-                    if (response.status === 403) {
-                        redirect("/login")
-                    }
-                    return response.json();
-                })
-                .then(user => {
-                    if (user) {
-                        setUser(user);
-                    }
-                });
-        }
+        fetch(url)
+            .then(response => {
+                if (response.status === 403) {
+                    redirect("/login")
+                }
+                return response.json();
+            })
+            .then(user => {
+                if (user) {
+                    setUser(user);
+                }
+            });
     }, []);
 
     if (!user) {
@@ -39,13 +34,5 @@ const User = () => {
         </p>
     );
 };
-
-function getCookieValue(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) {
-        return decodeURIComponent(match[2]);
-    }
-    return null;
-}
 
 export default User;
