@@ -25,6 +25,12 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       https: useHttps,
+      proxy: {
+        '/api': {
+          target: 'https://tilgangstyring-kartkatalog-api-dev.atkv3-dev.kartverket-intern.cloud',
+          changeOrigin: true
+        }
+      }
     },
     preview: {
       https: useHttps,
