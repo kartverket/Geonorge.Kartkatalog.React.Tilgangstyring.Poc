@@ -38,6 +38,7 @@ import Login from "@/components/routes/Login";
 import Logout from "@/components/routes/Logout";
 import User from "@/components/routes/User";
 import TokenExchange from "@/components/routes/TokenExchange";
+import {getUser} from "@/reducers/UserReducer";
 
 const initialState = {};
 
@@ -61,6 +62,7 @@ const App = () => {
             //store.dispatch(fetchAvailableWFSServiceStatuses());
             //store.dispatch(fetchAvailableWMSServiceStatuses());
             store.dispatch(getEnvironment());
+            store.dispatch(getUser());
         }
     }, [storeIsLoaded]);
 

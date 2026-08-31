@@ -76,7 +76,7 @@ const MainNavigationContainer = ({ layoutLoaderData }) => {
             },
             onSignInClick: (event) => {
                 event.preventDefault();
-                navigate("/login")
+                dispatch(login(navigate));
             },
             onSignOutClick: (event) => {
                 event.preventDefault();

@@ -1,4 +1,5 @@
 import {USER_LOGIN, USER_LOGOUT} from '@/actions/types';
+import {getKartkatalogApiUrl} from "@/actions/ApiUrlActions";
 
 const initialState = {
     isAuthenticated: false,
@@ -24,11 +25,55 @@ export default function(state = initialState, action) {
     }
 }
 
-export const login = (data) => ({
-   type: USER_LOGIN,
-   payload: data
-});
+export const login  = (redirect) => (dispatch, getState) => {
+    const url = `${dispatch(getKartkatalogApiUrl())}/user`;
 
+    return fetch(url)
+        .then(response => {
+            if (response.status === 403 || response.status === 401) {
+                if (typeof redirect === 'function') {
+                    redirect('/login');
+                }
+            }
+            return response.json();
+        })
+        .then(user => {
+            if (user) {
+                return dispatch({
+                    type: USER_LOGIN,
+                    payload: user
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Failed to fetch user:', error);
+        });
+};
 export const logout = () => ({
     type: USER_LOGOUT
 });
+
+export const getUser = () => (dispatch, getState) => {
+    const url = `${dispatch(getKartkatalogApiUrl())}/user`;
+
+    return fetch(url)
+        .then(response => {
+            if (response.status === 403 || response.status === 401) {
+                return dispatch({
+                    type: USER_LOGOUT
+                });
+            }
+            return response.json();
+        })
+        .then(user => {
+            if (user) {
+                return dispatch({
+                    type: USER_LOGIN,
+                    payload: user
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Failed to fetch user:', error);
+        });
+};

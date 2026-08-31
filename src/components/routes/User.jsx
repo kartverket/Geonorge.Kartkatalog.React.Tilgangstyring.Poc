@@ -3,38 +3,20 @@ import React from "react";
 import {getKartkatalogApiUrl} from "@/actions/ApiUrlActions";
 import {useEffect, useState} from "react";
 import {redirect} from "react-router";
-import {login} from "@/reducers/UserReducer";
-import {useDispatch} from "react-redux";
+import {getUser, login} from "@/reducers/UserReducer";
+import {useDispatch, useSelector} from "react-redux";
+import {Link, useNavigate} from "react-router-dom";
 
 const User = () => {
-    const dispatch = useDispatch();
-    const [user, setUser] = useState(null);
+    const { profile, isAuthenticated } = useSelector((state) => state.user);
 
-    useEffect(() => {
-        let url = getKartkatalogApiUrl()() + "/user";
-
-        fetch(url)
-            .then(response => {
-                if (response.status === 403) {
-                    redirect("/login")
-                }
-                return response.json();
-            })
-            .then(user => {
-                if (user) {
-                    setUser(user);
-                    dispatch(login(user));
-                }
-            });
-    }, []);
-
-    if (!user) {
-        return <p>Laster...</p>;
+    if (!isAuthenticated) {
+        return <p>Bruker er ikke autentisert, logg inn <Link to={"/login"}>her</Link>.</p>;
     }
 
-    return (
+    return profile && (
         <p>
-            User: {user.Name}
+            User: {profile.Name}
         </p>
     );
 };
