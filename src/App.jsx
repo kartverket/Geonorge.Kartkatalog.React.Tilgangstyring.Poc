@@ -1,27 +1,27 @@
 // Dependencies
-import React, { useEffect, useState } from "react";
-import { Provider } from "react-redux";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import React, {useEffect, useState} from "react";
+import {Provider} from "react-redux";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {Helmet, HelmetProvider} from "react-helmet-async";
 
 // Utils
 import configureStore from "@/utils/configureStore";
 
 // Actions
-import { fetchResources } from "@/actions/ResourceActions";
-import { fetchSelectedLanguage } from "@/actions/SelectedLanguageActions";
-import { getEnvironment } from "@/actions/EnvironmentActions";
-import { fetchAvailableWFSServiceStatuses, fetchAvailableWMSServiceStatuses } from "@/actions/ServiceStatusActions";
-import { fetchArticleSearchResults, fetchMetadataSearchResults } from "@/actions/SearchResultActions";
-import { updateSelectedSearchResultsType } from "@/actions/SelectedSearchResultsTypeActions";
+import {fetchResources} from "@/actions/ResourceActions";
+import {fetchSelectedLanguage} from "@/actions/SelectedLanguageActions";
+import {getEnvironment} from "@/actions/EnvironmentActions";
+import {fetchAvailableWFSServiceStatuses, fetchAvailableWMSServiceStatuses} from "@/actions/ServiceStatusActions";
+import {fetchArticleSearchResults, fetchMetadataSearchResults} from "@/actions/SearchResultActions";
+import {updateSelectedSearchResultsType} from "@/actions/SelectedSearchResultsTypeActions";
 import {
     updateAvailableFacets,
     updateExpandedFacetFilters,
     updateSelectedFacetsFromUrl
 } from "@/actions/FacetFilterActions";
-import { fetchMetadata } from "@/actions/MetadataActions";
-import { fetchMetadataDistributions } from "@/actions/MetadataDistributionActions";
-import { fetchMetadataQuality } from "@/actions/MetadataQualityActions";
+import {fetchMetadata} from "@/actions/MetadataActions";
+import {fetchMetadataDistributions} from "@/actions/MetadataDistributionActions";
+import {fetchMetadataQuality} from "@/actions/MetadataQualityActions";
 
 // Components
 import Layout from "@/components/Layout";
@@ -32,11 +32,12 @@ import Metadata from "@/components/routes/Metadata";
 
 // Stylesheets
 import "@/scss/styles.scss";
-import { getEnvironment as getRuntimeEnvironment } from "@/utils/runtimeConfig";
+import {getEnvironment as getRuntimeEnvironment} from "@/utils/runtimeConfig";
 import "@/scss/theme.scss";
 import Login from "@/components/routes/Login";
 import Logout from "@/components/routes/Logout";
 import User from "@/components/routes/User";
+import TokenExchange from "@/components/routes/TokenExchange";
 
 const initialState = {};
 
@@ -79,8 +80,7 @@ const App = () => {
         Object.keys(expandedFacetFilters).forEach((selectedFacetKey) => {
             var selected = expandedFacetFilters[selectedFacetKey]
             var existsExpanded = expandedFacetFilters[selectedFacetKey];
-            if(existsExpanded === undefined)
-            {
+            if (existsExpanded === undefined) {
                 selected = true;
             }
             expandedFacetFilters[selectedFacetKey] = selected;
@@ -88,8 +88,7 @@ const App = () => {
         Object.keys(selectedFacets).forEach((selectedFacetKey) => {
             var selected = expandedFacetFilters[selectedFacetKey]
             var existsExpanded = expandedFacetFilters[selectedFacetKey];
-            if(existsExpanded === undefined)
-            {
+            if (existsExpanded === undefined) {
                 selected = true;
             }
             expandedFacetFilters[selectedFacetKey] = selected;
@@ -97,7 +96,7 @@ const App = () => {
         store.dispatch(updateExpandedFacetFilters(expandedFacetFilters));
     };
 
-    const searchDataLoader = async ({ request, params }) => {
+    const searchDataLoader = async ({request, params}) => {
         const searchStringParam = new URL(request.url).searchParams.get("text") || "";
         const offsetParam = new URL(request.url).searchParams.get("offset");
         const appendParam = new URL(request.url).searchParams.get("append");
@@ -164,7 +163,7 @@ const App = () => {
                     })
             ]).then(() => {
                 setExpandedFacetFilters(searchData.selectedFacets);
-                return { params, searchData };
+                return {params, searchData};
             });
         } else {
             store.dispatch(updateSelectedSearchResultsType(selectedResultsTypeParam));
@@ -196,17 +195,17 @@ const App = () => {
                             store.dispatch(updateAvailableFacets(availableFacets));
 
                             setExpandedFacetFilters(searchData.selectedFacets);
-                            return { params, searchData };
+                            return {params, searchData};
                         });
                 } else {
                     setExpandedFacetFilters(searchData.selectedFacets);
-                    return { params, searchData };
+                    return {params, searchData};
                 }
             });
         }
     };
 
-    const metadataLoader = async ({ request, params }) => {
+    const metadataLoader = async ({request, params}) => {
         const uuidParam = params.uuid;
         const dateStartParam = new URL(request.url).searchParams.get("dateStart");
         const dateEndParam = new URL(request.url).searchParams.get("dateEnd");
@@ -234,50 +233,54 @@ const App = () => {
 
     const router = createBrowserRouter([
         {
-            element: <Layout />,
+            element: <Layout/>,
             path: "/:searchResultsType?",
             id: "root",
             loader: searchDataLoader,
             children: [
                 {
-                    element: <Home />,
+                    element: <Home/>,
                     index: true
                 },
                 {
-                    element: <Metadata />,
+                    element: <Metadata/>,
                     path: "metadata/:uuid",
                     loader: metadataLoader
                 },
                 {
-                    element: <Metadata />,
+                    element: <Metadata/>,
                     path: "metadata/:title/:uuid",
                     loader: metadataLoader
                 },
                 {
-                    element: <Metadata />,
+                    element: <Metadata/>,
                     path: "metadata/:organizaton/:title/:uuid",
                     loader: metadataLoader
                 },
                 {
-                    element: <MapContainer />,
+                    element: <MapContainer/>,
                     path: "kart"
                 },
                 {
-                    element: <User />,
+                    element: <User/>,
                     path: "user"
                 },
                 {
-                    element: <Login />,
+                    element: <TokenExchange/>,
+                    path: "token-exchange"
+                },
+                {
+                    element: <Login/>,
                     path: "login"
                 },
                 {
-                    element: <Logout />,
+                    element: <Logout/>,
                     path: "logout"
                 }
             ]
         },
         {
-            element: <NotFound />,
+            element: <NotFound/>,
             path: "*"
         }
     ]);
@@ -288,10 +291,10 @@ const App = () => {
                 <HelmetProvider>
                     <Helmet>
                         {getRuntimeEnvironment() && getRuntimeEnvironment().length ? (
-                            <meta name="robots" content="noindex" />
+                            <meta name="robots" content="noindex"/>
                         ) : null}
                     </Helmet>
-                    <RouterProvider router={router} />
+                    <RouterProvider router={router}/>
                 </HelmetProvider>
             </Provider>
         );
