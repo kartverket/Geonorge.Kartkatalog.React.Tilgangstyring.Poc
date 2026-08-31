@@ -3,8 +3,11 @@ import React from "react";
 import {getKartkatalogApiUrl} from "@/actions/ApiUrlActions";
 import {useEffect, useState} from "react";
 import {redirect} from "react-router";
+import {login} from "@/reducers/UserReducer";
+import {useDispatch} from "react-redux";
 
 const User = () => {
+    const dispatch = useDispatch();
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -20,6 +23,7 @@ const User = () => {
             .then(user => {
                 if (user) {
                     setUser(user);
+                    dispatch(login(user));
                 }
             });
     }, []);

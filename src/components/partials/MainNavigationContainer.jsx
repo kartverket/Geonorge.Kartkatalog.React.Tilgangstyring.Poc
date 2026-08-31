@@ -13,6 +13,7 @@ import { fetchItemsToDownload, autoAddItemFromLocalStorage } from "@/actions/Dow
 import { MainNavigation } from "@kartverket/geonorge-web-components/MainNavigation";
 import '@kartverket/geonorge-web-components/index.css';
 import { getEnvironment } from "@/utils/runtimeConfig";
+import {login, logout} from "@/reducers/UserReducer";
 
 const MainNavigationContainer = ({ layoutLoaderData }) => {
     const navigate = useNavigate();
@@ -22,6 +23,7 @@ const MainNavigationContainer = ({ layoutLoaderData }) => {
 
     // Redux store
     const selectedLanguage = useSelector((state) => state.selectedLanguage);
+    const { profile, isAuthenticated } = useSelector((state) => state.user);
 
     // Refs
     const lastSearchStringRef = useRef(searchData?.searchString || "");
@@ -37,7 +39,7 @@ const MainNavigationContainer = ({ layoutLoaderData }) => {
         searchString = searchString.replace(/[^a-å0-9- ]+/gi, ""); // Removes unwanted characters
         searchString = searchString.replace(/\s\s+/g, " "); // Remove redundant whitespace
         if (searchString.length > 1) {
-            const isLoggedIn = false; //TODO
+            const isLoggedIn = isAuthenticated;
             const view = new URLSearchParams(window.location.search).get("view");
             const viewParam = view ? `&view=${view}` : "";
             if (isLoggedIn) {
@@ -78,6 +80,7 @@ const MainNavigationContainer = ({ layoutLoaderData }) => {
             },
             onSignOutClick: (event) => {
                 event.preventDefault();
+                dispatch(logout());
                 navigate("/logout")
             },
             onNorwegianLanguageSelect: async () => {
@@ -105,8 +108,8 @@ const MainNavigationContainer = ({ layoutLoaderData }) => {
     const articlesResultsFound = searchData?.results?.articles?.NumFound || 0;
 
     const userinfo = {
-        name: "Navn Navnesen", //TODO
-        email: "navn.navnesen@eksempel.no",
+        name: profile ? profile.Name : "",
+        email: profile? profile.Email : ""
     };
 
     const orginfo = {
@@ -118,7 +121,7 @@ const MainNavigationContainer = ({ layoutLoaderData }) => {
     const mainNavigationProps = {
         userinfo: JSON.stringify(userinfo),
         orginfo: JSON.stringify(orginfo),
-        isLoggedIn: false, //TODO
+        isLoggedIn: isAuthenticated,
         language: selectedLanguage,
         environment: getEnvironment(),
         searchString: lastSearchStringRef.current,
