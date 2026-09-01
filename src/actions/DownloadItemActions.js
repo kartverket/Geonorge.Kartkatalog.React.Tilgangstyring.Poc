@@ -117,6 +117,8 @@ export const addItemSelectedForDownload = (itemToAdd) => (dispatch, getState) =>
                 alert("Du har ikke tilgang til å legge datasett til nedlasting");
             }
         }*/
+        addItemToLocalStorage(itemToAdd);
+        dispatch(fetchItemsToDownload());
     }
 };
 
