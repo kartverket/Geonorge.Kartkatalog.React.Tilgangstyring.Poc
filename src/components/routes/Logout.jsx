@@ -1,8 +1,14 @@
 // Dependencies
-import React from "react";
+import React, {useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 
 const Logout = () => {
-    return <p>login page, should redirect after auth</p>
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        navigate("/")
+    }, []);
+    return <p>logout</p>
 };
 
 export default Logout;

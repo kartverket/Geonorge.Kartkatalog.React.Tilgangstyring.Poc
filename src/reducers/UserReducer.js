@@ -66,7 +66,7 @@ export const getUser = () => (dispatch, getState) => {
             return response.json();
         })
         .then(user => {
-            if (user) {
+            if (user.Name && user.Email) {
                 return dispatch({
                     type: USER_LOGIN,
                     payload: user
