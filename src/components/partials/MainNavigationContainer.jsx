@@ -81,7 +81,7 @@ const MainNavigationContainer = ({ layoutLoaderData }) => {
             onSignOutClick: (event) => {
                 event.preventDefault();
                 dispatch(logout());
-                navigate("/logout")
+                window.location.href = '/logout';
             },
             onNorwegianLanguageSelect: async () => {
                 await dispatch(updateSelectedLanguage("no"));
