@@ -85,11 +85,22 @@ export const addItemSelectedForDownload = (itemToAdd) => (dispatch, getState) =>
         );
         dispatch(fetchItemsToDownload());
     } else if (itemToAdd?.accessIsRestricted) {
-        addItemToLocalStorage(itemToAdd);
-        dispatch(
-            pushToDataLayer({ event: "updateCart", category: "download", activity: "addToCart", metadata: tagData })
-        );
-        dispatch(fetchItemsToDownload());
+        const hasOidcCookie = getCookie("oidcAccessToken").length > 0;
+        if (hasOidcCookie) {
+            addItemToLocalStorage(itemToAdd);
+            const tagData = {
+                name: itemToAdd.name,
+                uuid: itemToAdd.uuid,
+                accessIsOpendata: itemToAdd.accessIsOpendata,
+                accessIsRestricted: itemToAdd.accessIsRestricted,
+                organizationName: itemToAdd.organizationName,
+                theme: itemToAdd.theme
+            };
+            dispatch(
+                pushToDataLayer({ event: "updateCart", category: "download", activity: "addToCart", metadata: tagData })
+            );
+            dispatch(fetchItemsToDownload());
+        }
     }
 };
 

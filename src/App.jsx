@@ -268,10 +268,6 @@ const App = () => {
                     path: "user"
                 },
                 {
-                    element: <TokenExchange/>,
-                    path: "token-exchange"
-                },
-                {
                     element: <Login/>,
                     path: "login"
                 },
