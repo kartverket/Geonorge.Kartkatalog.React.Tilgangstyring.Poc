@@ -4,7 +4,16 @@ import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
 const Login = () => {
-    return <p>login page, should redirect after auth</p>
+    const { isAuthenticated } = useSelector((state) => state.user);
+
+    useEffect(() => {
+        if(!isAuthenticated)
+            window.location.reload()
+        else
+            window.location.href = '/'
+
+    }, []);
+    return <p>Du skal bli automatisk tatt videre til login</p>
 };
 
 export default Login;
