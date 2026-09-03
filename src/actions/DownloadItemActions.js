@@ -6,6 +6,8 @@ import { FETCH_ITEMS_TO_DOWNLOAD } from "@/actions/types";
 
 // Reducers
 import { pushToDataLayer } from "@/reducers/TagManagerReducer";
+import {getUser} from "@/reducers/UserReducer";
+import {useSelector} from "react-redux";
 
 export const fetchItemsToDownload = () => (dispatch) => {
     let itemsToDownload =
@@ -82,42 +84,11 @@ export const addItemSelectedForDownload = (itemToAdd) => (dispatch, getState) =>
             pushToDataLayer({ event: "updateCart", category: "download", activity: "addToCart", metadata: tagData })
         );
         dispatch(fetchItemsToDownload());
-    } else if (itemToAdd?.accessIsRestricted) { //TODO
-       /* const baatInfo = getState() && getState().baatInfo ? getState().baatInfo : null;
-        if (false) {
-            const roles = baatInfo.baat_services ? baatInfo.baat_services : null;
-            const constraintRequiredRole = itemToAdd?.capabilities?.accessConstraintRequiredRole;
-            let addDatasetIsAllowed = true;
-            if (constraintRequiredRole === undefined) {
-                addDatasetIsAllowed = true;
-            } else {
-                const requiredRoles = constraintRequiredRole.split(",").map((item) => item.trim());
-                for (let requiredRole of requiredRoles) {
-                    addDatasetIsAllowed = requiredRole
-                        ? roles &&
-                          roles.length &&
-                          roles.find((role) => {
-                              return role === requiredRole;
-                          }) !== undefined
-                        : true;
-                    if (addDatasetIsAllowed) break;
-                }
-                let isAdmin =
-                    roles &&
-                    roles.length &&
-                    roles.find((role) => {
-                        return role === "nd.metadata_admin";
-                    }) !== undefined;
-                if (isAdmin) addDatasetIsAllowed = true;
-            }
-            if (addDatasetIsAllowed) {
-                addItemToLocalStorage(itemToAdd);
-                dispatch(fetchItemsToDownload());
-            } else {
-                alert("Du har ikke tilgang til å legge datasett til nedlasting");
-            }
-        }*/
+    } else if (itemToAdd?.accessIsRestricted) {
         addItemToLocalStorage(itemToAdd);
+        dispatch(
+            pushToDataLayer({ event: "updateCart", category: "download", activity: "addToCart", metadata: tagData })
+        );
         dispatch(fetchItemsToDownload());
     }
 };
@@ -128,10 +99,11 @@ export const autoAddItemFromLocalStorage = () => (dispatch, getState) => {
         localStorage.autoAddDownloadItemOnLoad.length &&
         localStorage.autoAddDownloadItemOnLoad !== "undefined" &&
         localStorage.autoAddDownloadItemOnLoad !== "null";
+
     const itemToAdd = hasItemToAdd ? JSON.parse(localStorage.autoAddDownloadItemOnLoad) : null;
-    const isLoggedIn = getCookie("oidcAccessToken").length > 0;
-    //const hasBaatInfo = getState().baatInfo && getState().baatInfo.user;
-    if (itemToAdd && isLoggedIn /* && hasBaatInfo */) { //TODO
+    const hasOidcCookie = getCookie("oidcAccessToken").length > 0;
+
+    if (itemToAdd && hasOidcCookie) {
         dispatch(addItemSelectedForDownload(itemToAdd));
         localStorage.removeItem("autoAddDownloadItemOnLoad");
     }

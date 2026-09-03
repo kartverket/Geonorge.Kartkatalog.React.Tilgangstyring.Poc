@@ -22,6 +22,7 @@ import { Spinner } from "@digdir/designsystemet-react";
 import style from "@/components/partials/Buttons/Buttons.module.scss";
 import { Button } from "@digdir/designsystemet-react";
 import { DownloadIcon, XMarkIcon, ExternalLinkIcon } from "@navikt/aksel-icons";
+import {login} from "@/reducers/UserReducer";
 
 const DownloadButton = (props) => {
     const dispatch = useDispatch();
@@ -39,7 +40,7 @@ const DownloadButton = (props) => {
     const buttonClass = `${style.listButton} `;
 
     const handleLoginClick = () => {
-       console.log("[DownloadButton] LOGIN") //TODO
+        dispatch(login());
     };
 
     const renderDownloadIcon = () =>

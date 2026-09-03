@@ -25,7 +25,7 @@ export default function(state = initialState, action) {
     }
 }
 
-export const login  = (redirect) => (dispatch, getState) => {
+export const login  = () => (dispatch) => {
     const url = `${dispatch(getKartkatalogApiUrl())}/user`;
 
     return fetch(url)
