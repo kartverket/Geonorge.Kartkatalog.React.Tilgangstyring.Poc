@@ -31,7 +31,7 @@ export const login  = (redirect) => (dispatch, getState) => {
     return fetch(url)
         .then(response => {
             if (response.status === 403 || response.status === 401) {
-                window.location.href = 'login';
+                window.location.href = '/login';
             }
             return response.json();
         })
