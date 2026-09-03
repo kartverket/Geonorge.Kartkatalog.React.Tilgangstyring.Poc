@@ -30,7 +30,7 @@ const DownloadButton = (props) => {
 
     // Redux store
     const itemsToDownload = useSelector((state) => state.itemsToDownload);
-    const auth = useSelector((state) => state.auth);
+    const { isAuthenticated } = useSelector((state) => state.user);
 
     // State
     const [isAdded, setIsAdded] = useState(false);
@@ -65,7 +65,6 @@ const DownloadButton = (props) => {
     };
 
     const addToDownloadList = (item) => {
-        const isNotAuthenticated = !auth?.user;
         const requestAction = dispatch(getApiData(`${item.getCapabilitiesUrl}${item.uuid}`))
             .then((capabilities) => {
                 let apiRequests = {};
@@ -103,7 +102,7 @@ const DownloadButton = (props) => {
                             projections,
                             formats
                         };
-                        if (item.accessIsRestricted && isNotAuthenticated) {
+                        if (item.accessIsRestricted && !isAuthenticated) {
                             localStorage.setItem("autoAddDownloadItemOnLoad", JSON.stringify(item));
                             handleLoginClick();
                         } else {
